@@ -66,20 +66,6 @@ $pages = [
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link <?= ((!empty($GetURL) && in_array($GetURL, $pages['sessions'])) ? "active-clean" : ""); ?>" href="#navbar-sessions" data-toggle="collapse" role="button" aria-expanded="<?= !empty($GetURL) && in_array($GetURL, $pages['sessions']) ? "true" : "false"; ?>" aria-controls="navbar-sessions">
-              <i class="fas fa-atom" style="color: #2dce89;"></i>
-              <span class="nav-link-text">Sessões</span>
-            </a>
-            <div class="collapse <?= !empty($GetURL) && in_array($GetURL, $pages['sessions']) ? "show" : ""; ?>" id="navbar-sessions">
-              <ul class="nav nav-sm flex-column">
-                <li class="nav-item">
-                  <a href="<?= BASE; ?>/panel.php?page=sessions/index" class="nav-link">Gerenciar</a>
-                  <a href="<?= BASE; ?>/panel.php?page=sessions/form" class="nav-link">Criar</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
             <a class="nav-link <?= ((!empty($GetURL) && in_array($GetURL, $pages['classes'])) ? "active-clean" : ""); ?>" href="#navbar-classes" data-toggle="collapse" role="button" aria-expanded="<?= !empty($GetURL) && in_array($GetURL, $pages['classes']) ? "true" : "false"; ?>" aria-controls="navbar-classes">
               <i class="fas fa-users-class" style="color: #f5365c;"></i>
               <span class="nav-link-text">Classes</span>
@@ -89,6 +75,20 @@ $pages = [
                 <li class="nav-item">
                   <a href="<?= BASE; ?>/panel.php?page=classes/index" class="nav-link">Gerenciar</a>
                   <a href="<?= BASE; ?>/panel.php?page=classes/form" class="nav-link">Criar</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?= ((!empty($GetURL) && in_array($GetURL, $pages['sessions'])) ? "active-clean" : ""); ?>" href="#navbar-sessions" data-toggle="collapse" role="button" aria-expanded="<?= !empty($GetURL) && in_array($GetURL, $pages['sessions']) ? "true" : "false"; ?>" aria-controls="navbar-sessions">
+              <i class="fas fa-atom" style="color: #2dce89;"></i>
+              <span class="nav-link-text">Sessões</span>
+            </a>
+            <div class="collapse <?= !empty($GetURL) && in_array($GetURL, $pages['sessions']) ? "show" : ""; ?>" id="navbar-sessions">
+              <ul class="nav nav-sm flex-column">
+                <li class="nav-item">
+                  <a href="<?= BASE; ?>/panel.php?page=sessions/index" class="nav-link">Gerenciar</a>
+                  <a href="<?= BASE; ?>/panel.php?page=sessions/form" class="nav-link">Criar</a>
                 </li>
               </ul>
             </div>

@@ -1,6 +1,6 @@
 <?php
 if (isset($GetId)) {
-  $Read->FullRead("SELECT * FROM users WHERE use_id = {$GetId}");
+  $Read->FullRead("SELECT * FROM sessions WHERE ses_id = {$GetId}");
 
   if ($Read->getResult()) {
     $Register = $Read->getResult()[0];
@@ -10,23 +10,22 @@ if (isset($GetId)) {
   }
 }
 ?>
-
-<div class="header bg-primary pb-6">
+<div class="header pb-6">
   <div class="container-fluid">
     <div class="header-body">
       <div class="row align-items-center py-4">
         <div class="col-lg-6 col-7">
-          <h6 class="h2 text-white d-inline-block mb-0">Membros</h6>
+          <h6 class="h2 d-inline-block mb-0">Sessões</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-              <li class="breadcrumb-item"><i class="ni ni-single-02"></i></li>
-              <li class="breadcrumb-item">Membros</li>
+            <ol class="breadcrumb breadcrumb-links">
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-atom"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Sessões</a></li>
               <li class="breadcrumb-item active" aria-current="page">Formulário</li>
             </ol>
           </nav>
         </div>
         <div class="col-lg-6 col-5 text-right">
-          <a href="<?= BASE; ?>/panel.php?url=user/index" class="btn btn-sm btn-neutral">Voltar</a>
+          <a href="<?= BASE; ?>/panel.php?url=classes/index" class="btn btn-sm btn-neutral">Voltar</a>
         </div>
       </div>
     </div>
@@ -35,119 +34,131 @@ if (isset($GetId)) {
 
 <!-- Page content -->
 <div class="container-fluid mt--6">
-  <form class="j_form" method="post" enctype="multipart/form-data">
+  <div class="row">
+    <div class="col-xl-12 order-xl-1">
+      <div class="card">
+        <!-- Card header -->
+        <div class="card-header">
+          <h3 class="mb-0"><?= ((isset($GetId)) ? "Atualizar" : "Nova"); ?> Sessão</h3>
+        </div>
+        <!-- Light table -->
+        <div class="card-body">
+          <form id="SessionForm" class="j_form" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="AjaxFile" value="Sessions">
+            <input type="hidden" name="AjaxAction" value="save">
+            <input type="hidden" name="id" value="<?= (isset($Register) ? $Register['ses_id'] : ""); ?>">
+
+            <div class="form-group">
+              <label>*Nome</label>
+              <input type="text" name="ses_name" value="<?= (isset($Register) ? $Register['ses_name'] : ""); ?>" placeholder="Nome" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+              <label>Encerramento</label>
+              <input type="text" name="ses_endat" value="<?= (isset($Register) ? date("d/m/Y H:i:s", strtotime($Register['ses_endat'])) : ""); ?>" placeholder="Encerramento" class="form-control jwc_datepicker date_time" data-timepicker="true">
+            </div>
+
+            <div class="form-group">
+              <label>*Classe</label>
+              <select class="form-control" name="ses_idclass" required>
+                <?php
+                $Read->FullRead("SELECT cla_id, cla_name FROM classes WHERE cla_iduser = {$_SESSION['userlogin']['use_id']}");
+                if ($Read->getResult()) {
+                  foreach ($Read->getResult() as $key => $value) {
+                    echo "<option value='{$value['cla_id']}' ".(isset($Register) && $Register['ses_idclass'] == $value['cla_id'] ? "selected" : "").">{$value['cla_name']}</option>";
+                  }
+                }
+                ?>
+              </select>
+            </div>
+          </form>
+        </div>
+        <!-- Card footer -->
+        <div class="card-footer py-4">
+          <button class="btn btn-sm btn-default" type="submit" name="button">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <?php if (isset($Register)): ?>
     <div class="row">
-      <div class="col-xl-8 order-xl-1">
+      <div class="col-xl-12 order-xl-1">
         <div class="card">
           <!-- Card header -->
           <div class="card-header">
-            <h3 class="mb-0"><?= ((isset($GetId)) ? "Atualizar" : "Novo"); ?> Usuário</h3>
+            <h3 class="mb-0">Tópicos</h3>
           </div>
           <!-- Light table -->
-          <div class="card-body">
-            <input type="hidden" name="AjaxFile" value="User">
-            <input type="hidden" name="AjaxAction" value="save">
-            <input type="hidden" name="id" value="<?= (isset($Register) ? $Register['par_id'] : ""); ?>">
+          <form id="TopicForm" class="j_form" action="" method="post">
+            <div class="card-body">
+              <input type="hidden" name="AjaxFile" value="Sessions">
+              <input type="hidden" name="AjaxAction" value="saveTopic">
+              <input type="hidden" name="id" value="">
+              <input type="hidden" name="top_idsession" value="<?= $Register['ses_id']; ?>">
 
-            <div class="form-group">
-              <label>*Tipo de Documento</label>
-              <select class="form-control" name="par_idoperationtypedocument" required>
-                <?php
-                $Read->FullRead("SELECT oty_id, oty_description FROM operationstype WHERE oty_group = " . OT_GROUP_PERSON_TYPE);
-                if ($Read->getResult()) {
-                  foreach ($Read->getResult() as $key => $value) {
-                    echo "<option value='{$value['oty_id']}' ".(isset($Register) && $Register['par_idoperationtypedocument'] == $value['oty_id'] ? "selected" : "").">{$value['oty_description']}</option>";
-                  }
-                }
-                ?>
-              </select>
+              <div class="row">
+                <div class="col-xl-12">
+                  <div class="form-group">
+                    <label>*Descrição</label>
+                    <textarea name="top_description" rows="3" cols="80" placeholder="Descrição" class="form-control" required></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-sm btn-default" type="submit" name="button">Salvar</button>
             </div>
-
-            <div class="form-group">
-              <label>*Documento</label>
-              <input type="text" name="par_cpf" value="<?= (isset($Register) ? $Register['par_cpf'] : ""); ?>" placeholder="Documento" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-              <label>*Status</label>
-              <select class="form-control" name="par_idoperationtypestatus" required>
-                <?php
-                $Read->FullRead("SELECT oty_id, oty_description FROM operationstype WHERE oty_group = " . OT_GROUP_STATUS);
-                if ($Read->getResult()) {
-                  foreach ($Read->getResult() as $key => $value) {
-                    echo "<option value='{$value['oty_id']}' ".(isset($Register) && $Register['par_idoperationtypestatus'] == $value['oty_id'] ? "selected" : "").">{$value['oty_description']}</option>";
-                  }
-                }
-                ?>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label>*Nome Completo</label>
-              <input type="text" name="par_companyname" value="<?= (isset($Register) ? $Register['par_companyname'] : ""); ?>" placeholder="Nome" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-              <label>*Email</label>
-              <input type="text" name="par_email" value="<?= (isset($Register) ? $Register['par_email'] : ""); ?>" placeholder="Email" class="form-control" required>
-            </div>
-
-            <div class="form-group">
-              <label>Senha</label>
-              <input type="password" name="par_password" value="" placeholder="Senha" class="form-control">
-            </div>
-
-            <div class="form-group">
-              <label>*Permissão</label>
-              <select class="form-control" name="par_idpermissiongroup" required>
-                <?php
-                $Read->FullRead("SELECT pgr_id, pgr_name FROM permissionsgroups WHERE pgr_idoperationtypestatus = " . OTY_STATUS_SIMPLE_ACTIVE);
-                if ($Read->getResult()) {
-                  foreach ($Read->getResult() as $key => $value) {
-                    echo "<option value='{$value['pgr_id']}' ".(isset($Register) && $Register['par_idpermissiongroup'] == $value['pgr_id'] ? "selected" : "").">{$value['pgr_name']}</option>";
-                  }
-                }
-                ?>
-              </select>
-            </div>
-
-
-          </div>
+          </form>
           <!-- Card footer -->
           <div class="card-footer py-4">
-            <button class="btn btn-sm btn-default" type="submit" name="button">Salvar</button>
-          </div>
-        </div>
-      </div>
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th width="5"></th>
+                    <th width="5">#</th>
+                    <th>Descrição</th>
+                  </tr>
+                </thead>
+                <tbody class="list tbody_topics">
+                  <?php
+                  $SQL = "SELECT
+                      top_id,
+                      top_description
+                    FROM
+                      sessions_topics
+                    WHERE
+                      top_idsession = {$Register['ses_id']}
+                  ";
 
-      <div class="col-xl-4 order-xl-2">
-        <div class="card card-profile">
-          <img src="assets/argon/img/theme/img-1-1000x600.jpg" alt="Image placeholder" class="card-img-top">
-          <div class="row justify-content-center">
-            <div class="col-lg-3 order-lg-2">
-              <div class="card-profile-image">
-                <a href="#">
-                  <img id="j_show_img" src="<?= (isset($Register) && !empty($Register['par_picture']) ? BASE . "/tim.php?w=150&h=150&src=uploads/" . $Register['par_picture'] : BASE . "/tim.php?w=150&h=150&src=assets/img/noimg.png"); ?>" class="rounded-circle">
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-
-          </div>
-          <div class="card-body pt-0">
-            <div class="row">
-              <div class="form-group">
-                <br>
-                <br>
-                <input onchange="showThumbnail(this);" type="file" name="par_picture" class="form-control">
-              </div>
+                  $Read->FullRead($SQL);
+                  if ($Read->getResult()) {
+                    foreach ($Read->getResult() as $key => $value) {
+                      echo "<tr class='single_topic' id='{$value['top_id']}'>
+                        <td>
+                          <div class='dropdown'>
+                            <a class='btn btn-sm btn-icon-only text-light' href='#' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+                              <i class='fas fa-ellipsis-v'></i>
+                            </a>
+                            <div class='dropdown-menu dropdown-menu-right dropdown-menu-arrow' style=''>
+                              <button ajaxfile='Sessions' ajaxaction='getTopic' ajaxdata='id={$value['top_id']}' class='dropdown-item j_ajax_generic'>Editar</button>
+                            </div>
+                          </div>
+                        </td>
+                        <td>{$value['top_id']}</td>
+                        <td>{$value['top_description']}</td>
+                      </tr>";
+                    }
+                  }
+                  ?>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </form>
+  <?php endif; ?>
 
-  <?php include 'components/panel/footer.php'; ?>
+  <?php include 'src/components/footer.php'; ?>
 </div>

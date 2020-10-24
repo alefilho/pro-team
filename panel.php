@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '_app/Config.inc.php';
+require_once 'src/functions/utils.php';
 
 $Login = new Login;
 if (!$Login->CheckLogin()):

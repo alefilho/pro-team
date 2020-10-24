@@ -3,11 +3,11 @@
     <div class="header-body">
       <div class="row align-items-center py-4">
         <div class="col-lg-6 col-7">
-          <h6 class="h2 d-inline-block mb-0">Membros</h6>
+          <h6 class="h2 d-inline-block mb-0">Times</h6>
           <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
             <ol class="breadcrumb breadcrumb-links">
-              <li class="breadcrumb-item"><a href="#"><i class="far fa-users"></i></a></li>
-              <li class="breadcrumb-item"><a href="#">Membros</a></li>
+              <li class="breadcrumb-item"><a href="#"><i class="fas fa-users"></i></a></li>
+              <li class="breadcrumb-item"><a href="#">Times</a></li>
               <li class="breadcrumb-item active" aria-current="page">Lista</li>
             </ol>
           </nav>
@@ -27,7 +27,7 @@
       <div class="card">
         <!-- Card header -->
         <div class="card-header border-0">
-          <h3 class="mb-0">Lista de Membros</h3>
+          <h3 class="mb-0">Lista de Times</h3>
         </div>
         <!-- Light table -->
         <div class="table-responsive">
@@ -36,9 +36,9 @@
               <tr>
                 <th width="5">#</th>
                 <th>Nome</th>
+                <th>Membros</th>
+                <th>Descrição</th>
                 <th>Classe</th>
-                <th>Feedbacks</th>
-                <th>Email</th>
                 <th>Data Criação</th>
                 <th>Atualização</th>
               </tr>
@@ -51,40 +51,38 @@
               $Pager = new Pager(BASE . '/panel.php?url=members/index&pag=');
               $Pager->ExePager($GetPag, 50);
               $SQL = "SELECT
-                	mem_id,
-                	mem_email,
-                	mem_name,
-                	mem_idclass,
-                	mem_createdat,
-                	mem_updatedat,
-                  cla_name,
-                	COUNT( DISTINCT fee_id ) AS feedbacks
+                	tea_id,
+                	tea_name,
+                	tea_description,
+                	tea_createdat,
+                	tea_updatedat,
+                	GROUP_CONCAT(mem_name + ', ' ORDER BY mem_name) AS members
                 FROM
-                	members
+                	teams
+                	LEFT JOIN teams_members ON tme_idteam = tea_id
+                	LEFT JOIN members ON mem_id = tme_idmember
                 	LEFT JOIN classes ON cla_id = mem_idclass
-                	LEFT JOIN sessions_topics_feedbacks ON fee_idmember = mem_id
                 WHERE
                 	cla_iduser = {$_SESSION['userlogin']['use_id']}
                 GROUP BY
-                	mem_id,
-                	mem_email,
-                	mem_name,
-                	mem_idclass,
-                	mem_createdat,
-                	mem_updatedat,
-                  cla_name
+                	tea_id,
+                	tea_name,
+                	tea_description,
+                	tea_createdat,
+                	tea_updatedat
               ";
 
               $Read->FullRead("{$SQL} LIMIT :limit OFFSET :offset", "limit={$Pager->getLimit()}&offset={$Pager->getOffset()}");
               if ($Read->getResult()) {
                 foreach ($Read->getResult() as $key => $value) {
-                  echo "<tr class='single_member' id='{$value['mem_id']}'>
-                    <td>{$value['mem_id']}</td>
+                  echo "<tr class='single_team' id='{$value['tea_id']}'>
+                    <td>{$value['tea_id']}</td>
+                    <td>{$value['tea_name']}</td>
+                    <td>{$value['members']}</td>
+                    <td>{$value['tea_description']}</td>
                     <td>{$value['cla_name']}</td>
-                    <td>{$value['feedbacks']}</td>
-                    <td>{$value['mem_email']}</td>
-                    <td>".(!empty($value['mem_createdat']) ? date("d/m/Y H:i:s", strtotime($value['mem_createdat'])) : "")."</td>
-                    <td>".(!empty($value['mem_updatedat']) ? date("d/m/Y H:i:s", strtotime($value['mem_updatedat'])) : "")."</td>
+                    <td>".(!empty($value['tea_createdat']) ? date("d/m/Y H:i:s", strtotime($value['tea_createdat'])) : "")."</td>
+                    <td>".(!empty($value['tea_updatedat']) ? date("d/m/Y H:i:s", strtotime($value['tea_updatedat'])) : "")."</td>
                   </tr>";
                 }
               }
