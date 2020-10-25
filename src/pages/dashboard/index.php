@@ -32,7 +32,17 @@
           <div class="row">
             <div class="col">
               <h5 class="card-title text-uppercase text-muted mb-0 text-white">MEMBROS</h5>
-              <span class="h2 font-weight-bold mb-0 text-white">1</span>
+              <?php
+              $Read->FullRead("SELECT
+                	COUNT( mem_id ) AS count
+                FROM
+                	members
+                	LEFT JOIN classes ON cla_id = mem_idclass
+                WHERE
+                	cla_iduser = {$_SESSION['userlogin']['use_id']}"
+              );
+              ?>
+              <span class="h2 font-weight-bold mb-0 text-white"><?= $Read->getResult()[0]['count']; ?></span>
             </div>
           </div>
         </div>
@@ -45,7 +55,16 @@
           <div class="row">
             <div class="col">
               <h5 class="card-title text-uppercase text-muted mb-0 text-white">CLASSES</h5>
-              <span class="h2 font-weight-bold mb-0 text-white">1</span>
+              <?php
+              $Read->FullRead("SELECT
+                	COUNT( cla_id ) AS count
+                FROM
+                	classes
+                WHERE
+                	cla_iduser = {$_SESSION['userlogin']['use_id']}"
+              );
+              ?>
+              <span class="h2 font-weight-bold mb-0 text-white"><?= $Read->getResult()[0]['count']; ?></span>
             </div>
           </div>
         </div>
@@ -58,7 +77,32 @@
           <div class="row">
             <div class="col">
               <h5 class="card-title text-uppercase text-muted mb-0 text-white">TIMES</h5>
-              <span class="h2 font-weight-bold mb-0 text-white">1</span>
+              <?php
+              $Read->FullRead("SELECT
+                	tea_id,
+                	tea_name,
+                	tea_description,
+                	tea_createdat,
+                	tea_updatedat,
+                  cla_name,
+                	GROUP_CONCAT(mem_name ORDER BY mem_name) AS members
+                FROM
+                	teams
+                	LEFT JOIN teams_members ON tme_idteam = tea_id
+                	LEFT JOIN members ON mem_id = tme_idmember
+                	LEFT JOIN classes ON cla_id = mem_idclass
+                WHERE
+                	cla_iduser = {$_SESSION['userlogin']['use_id']}
+                GROUP BY
+                	tea_id,
+                	tea_name,
+                	tea_description,
+                	tea_createdat,
+                	tea_updatedat,
+                  cla_name"
+              );
+              ?>
+              <span class="h2 font-weight-bold mb-0 text-white"><?= $Read->getRowCount(); ?></span>
             </div>
           </div>
         </div>
@@ -71,7 +115,19 @@
           <div class="row">
             <div class="col">
               <h5 class="card-title text-uppercase text-muted mb-0 text-white">FEEDBACKS</h5>
-              <span class="h2 font-weight-bold mb-0 text-white">1</span>
+              <?php
+              $Read->FullRead("SELECT
+                	COUNT( DISTINCT fee_id ) AS count
+                FROM
+                	sessions
+                	LEFT JOIN classes ON cla_id = ses_idclass
+                	LEFT JOIN sessions_topics ON top_idsession = ses_id
+                	LEFT JOIN sessions_topics_feedbacks ON fee_idtopic = top_id
+                WHERE
+                	cla_iduser = {$_SESSION['userlogin']['use_id']}"
+              );
+              ?>
+              <span class="h2 font-weight-bold mb-0 text-white"><?= $Read->getResult()[0]['count']; ?></span>
             </div>
           </div>
         </div>
@@ -80,27 +136,29 @@
   </div>
 
   <?php
-  $w = " AND created_at >= ".strtotime('-30 day', time())." AND created_at <= ".time()." ";
-  // $Read->FullRead("SELECT
-  //     COUNT(id) AS count,
-  //     FROM_UNIXTIME(created_at, '%d/%m') AS created_at
-  //   FROM
-  //     users
-  //   WHERE
-  //     enabled = 1
-  //     AND member_id = {$_SESSION['userlogin']['id']}
-  //     {$w}
-  //   GROUP BY
-  //     FROM_UNIXTIME(created_at, '%d/%m')
-  //   ORDER BY
-  //     FROM_UNIXTIME(created_at, '%m/%d')"
-  // );
+  $w = " AND fee_createdat >= '".date("Y-m-d", strtotime('-30 day', time()))." 00:00:00' AND fee_createdat <= '".date("Y-m-d")." 23:59:59' ";
+  $Read->FullRead("SELECT
+    	COUNT( fee_id ) AS count,
+    	DATE_FORMAT( fee_createdat, '%Y-%m-%d' ) AS fee_createdat
+    FROM
+    	sessions_topics_feedbacks
+    	LEFT JOIN sessions_topics ON top_id = fee_idtopic
+    	LEFT JOIN sessions ON ses_id = top_idsession
+    	LEFT JOIN classes ON cla_id = ses_idclass
+    WHERE
+    	cla_iduser = {$_SESSION['userlogin']['use_id']}
+      {$w}
+    GROUP BY
+    	DATE_FORMAT( fee_createdat, '%Y-%m-%d' )
+    ORDER BY
+    	DATE_FORMAT( fee_createdat, '%Y-%m-%d' )"
+  );
 
   $labels = [];
   $datasets = [];
   if ($Read->getResult()) {
     foreach ($Read->getResult() as $key => $value) {
-      $labels[] = "'{$value['created_at']}'";
+      $labels[] = "'{$value['fee_createdat']}'";
       $datasets[] = $value['count'];
     }
   }
