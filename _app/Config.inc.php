@@ -11,22 +11,22 @@ define('WS_INFOR', 'infor');
 define('WS_ALERT', 'alert');
 define('WS_ERROR', 'error');
 
-require_once(__DIR__ . '/../vendor/autoload.php');
+function __autoload($Class) {
+  $cDir = ['Conn','Helpers','Models'];
+  $iDir = null;
 
-require_once('Conn/Conn.class.php');
-require_once('Conn/Create.class.php');
-require_once('Conn/Delete.class.php');
-require_once('Conn/Read.class.php');
-require_once('Conn/Update.class.php');
-require_once('Helpers/Curl.class.php');
-require_once('Helpers/Check.class.php');
-require_once('Helpers/Pager.class.php');
-require_once('Helpers/Session.class.php');
-require_once('Helpers/Upload.class.php');
-require_once('Helpers/View.class.php');
-require_once('Models/Email.class.php');
-require_once('Models/Login.class.php');
+  foreach ($cDir as $dirName):
+    if (!$iDir && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $Class . '.class.php') && !is_dir(__DIR__ . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $Class . '.class.php')):
+      include_once (__DIR__ . DIRECTORY_SEPARATOR . $dirName . DIRECTORY_SEPARATOR . $Class . '.class.php');
+      $iDir = true;
+    endif;
+  endforeach;
 
+  if (!$iDir):
+    trigger_error("Nao foi possivel incluir {$Class}.class.php", E_USER_ERROR);
+    die;
+  endif;
+}
 
 function PHPErro($ErrNo, $ErrMsg, $ErrFile, $ErrLine) {
   $CssClass = ($ErrNo == E_USER_NOTICE ? WS_INFOR : ($ErrNo == E_USER_WARNING ? WS_ALERT : ($ErrNo == E_USER_ERROR ? WS_ERROR : $ErrNo)));
