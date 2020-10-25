@@ -41,7 +41,7 @@ endif;
           <div class="row justify-content-center">
             <div class="col-xl-5 col-lg-6 col-md-8 px-5">
               <img src="assets/img/logo.svg" style="width: 130px; margin-bottom: 15px;" alt="">
-              <h1 class="text-white">Cadastro</h1>
+              <h1 class="text-white">CADASTRO</h1>
             </div>
           </div>
         </div>
@@ -78,7 +78,7 @@ endif;
                 <div class="form-group">
                   <div class="input-group input-group-merge input-group-alternative">
                     <div class="input-group-prepend">
-                      <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                      <span class="input-group-text"><i class=""></i></span>
                     </div>
                     <input name="use_name" class="form-control" placeholder="Seu Nome" type="text" required>
                   </div>

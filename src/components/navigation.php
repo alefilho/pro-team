@@ -50,22 +50,6 @@ $pages = [
             </a>
           </li>
           <li class="nav-item">
-            <!-- class = "active-clean" -->
-            <!-- aria-expanded = "true" -->
-            <a class="nav-link <?= ((!empty($GetURL) && in_array($GetURL, $pages['members'])) ? "active-clean" : ""); ?>" href="#navbar-members" data-toggle="collapse" role="button" aria-expanded="<?= !empty($GetURL) && in_array($GetURL, $pages['members']) ? "true" : "false"; ?>" aria-controls="navbar-members">
-              <i class="far fa-users" style="color: #fb6340;"></i>
-              <span class="nav-link-text">Membros</span>
-            </a>
-            <!-- class = "show" -->
-            <div class="collapse <?= !empty($GetURL) && in_array($GetURL, $pages['members']) ? "show" : ""; ?>" id="navbar-members">
-              <ul class="nav nav-sm flex-column">
-                <li class="nav-item">
-                  <a href="<?= BASE; ?>/panel.php?page=members/index" class="nav-link active">Gerenciar</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li class="nav-item">
             <a class="nav-link <?= ((!empty($GetURL) && in_array($GetURL, $pages['classes'])) ? "active-clean" : ""); ?>" href="#navbar-classes" data-toggle="collapse" role="button" aria-expanded="<?= !empty($GetURL) && in_array($GetURL, $pages['classes']) ? "true" : "false"; ?>" aria-controls="navbar-classes">
               <i class="fas fa-users-class" style="color: #f5365c;"></i>
               <span class="nav-link-text">Classes</span>
@@ -75,6 +59,20 @@ $pages = [
                 <li class="nav-item">
                   <a href="<?= BASE; ?>/panel.php?page=classes/index" class="nav-link">Gerenciar</a>
                   <a href="<?= BASE; ?>/panel.php?page=classes/form" class="nav-link">Criar</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?= ((!empty($GetURL) && in_array($GetURL, $pages['members'])) ? "active-clean" : ""); ?>" href="#navbar-members" data-toggle="collapse" role="button" aria-expanded="<?= !empty($GetURL) && in_array($GetURL, $pages['members']) ? "true" : "false"; ?>" aria-controls="navbar-members">
+              <i class="far fa-users" style="color: #fb6340;"></i>
+              <span class="nav-link-text">Membros</span>
+            </a>
+            <!-- class = "show" -->
+            <div class="collapse <?= !empty($GetURL) && in_array($GetURL, $pages['members']) ? "show" : ""; ?>" id="navbar-members">
+              <ul class="nav nav-sm flex-column">
+                <li class="nav-item">
+                  <a href="<?= BASE; ?>/panel.php?page=members/index" class="nav-link active">Gerenciar</a>
                 </li>
               </ul>
             </div>

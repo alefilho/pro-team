@@ -49,14 +49,15 @@
                 $GetPag = 1;
               }
               $Pager = new Pager(BASE . '/panel.php?url=members/index&pag=');
-              $Pager->ExePager($GetPag, 50);
+              $Pager->ExePager($GetPag, LIMIT_PAGE);
               $SQL = "SELECT
                 	tea_id,
                 	tea_name,
                 	tea_description,
                 	tea_createdat,
                 	tea_updatedat,
-                	GROUP_CONCAT(mem_name + ', ' ORDER BY mem_name) AS members
+                  cla_name,
+                	GROUP_CONCAT(mem_name ORDER BY mem_name) AS members
                 FROM
                 	teams
                 	LEFT JOIN teams_members ON tme_idteam = tea_id
@@ -69,7 +70,8 @@
                 	tea_name,
                 	tea_description,
                 	tea_createdat,
-                	tea_updatedat
+                	tea_updatedat,
+                  cla_name
               ";
 
               $Read->FullRead("{$SQL} LIMIT :limit OFFSET :offset", "limit={$Pager->getLimit()}&offset={$Pager->getOffset()}");
@@ -78,7 +80,7 @@
                   echo "<tr class='single_team' id='{$value['tea_id']}'>
                     <td>{$value['tea_id']}</td>
                     <td>{$value['tea_name']}</td>
-                    <td>{$value['members']}</td>
+                    <td>".str_replace(",", ", <br>", $value['members'])."</td>
                     <td>{$value['tea_description']}</td>
                     <td>{$value['cla_name']}</td>
                     <td>".(!empty($value['tea_createdat']) ? date("d/m/Y H:i:s", strtotime($value['tea_createdat'])) : "")."</td>

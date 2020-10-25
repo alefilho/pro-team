@@ -49,7 +49,7 @@
                 $GetPag = 1;
               }
               $Pager = new Pager(BASE . '/panel.php?url=members/index&pag=');
-              $Pager->ExePager($GetPag, 50);
+              $Pager->ExePager($GetPag, LIMIT_PAGE);
               $SQL = "SELECT
                 	mem_id,
                 	mem_email,
@@ -80,6 +80,7 @@
                 foreach ($Read->getResult() as $key => $value) {
                   echo "<tr class='single_member' id='{$value['mem_id']}'>
                     <td>{$value['mem_id']}</td>
+                    <td>{$value['mem_name']}</td>
                     <td>{$value['cla_name']}</td>
                     <td>{$value['feedbacks']}</td>
                     <td>{$value['mem_email']}</td>

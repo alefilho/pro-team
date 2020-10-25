@@ -53,7 +53,7 @@
                 $GetPag = 1;
               }
               $Pager = new Pager(BASE . '/panel.php?page=members/index&pag=');
-              $Pager->ExePager($GetPag, 50);
+              $Pager->ExePager($GetPag, LIMIT_PAGE);
               $SQL = "SELECT
                 	cla_id,
                 	cla_name,

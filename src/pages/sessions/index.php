@@ -51,7 +51,7 @@
                 $GetPag = 1;
               }
               $Pager = new Pager(BASE . '/panel.php?page=sessions/index&pag=');
-              $Pager->ExePager($GetPag, 50);
+              $Pager->ExePager($GetPag, LIMIT_PAGE);
               $SQL = "SELECT
                 	ses_id,
                 	ses_name,

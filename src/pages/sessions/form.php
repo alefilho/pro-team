@@ -42,8 +42,8 @@ if (isset($GetId)) {
           <h3 class="mb-0"><?= ((isset($GetId)) ? "Atualizar" : "Nova"); ?> Sessão</h3>
         </div>
         <!-- Light table -->
-        <div class="card-body">
-          <form id="SessionForm" class="j_form" method="post" enctype="multipart/form-data">
+        <form id="SessionForm" class="j_form" method="post" enctype="multipart/form-data">
+          <div class="card-body">
             <input type="hidden" name="AjaxFile" value="Sessions">
             <input type="hidden" name="AjaxAction" value="save">
             <input type="hidden" name="id" value="<?= (isset($Register) ? $Register['ses_id'] : ""); ?>">
@@ -71,12 +71,12 @@ if (isset($GetId)) {
                 ?>
               </select>
             </div>
-          </form>
-        </div>
-        <!-- Card footer -->
-        <div class="card-footer py-4">
-          <button class="btn btn-sm btn-default" type="submit" name="button">Salvar</button>
-        </div>
+          </div>
+          <!-- Card footer -->
+          <div class="card-footer py-4">
+            <button class="btn btn-sm btn-default" type="submit" name="button">Salvar</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
