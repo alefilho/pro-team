@@ -34,6 +34,7 @@
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
               <tr>
+                <th width="5"></th>
                 <th width="5">#</th>
                 <th>Nome</th>
                 <th>Classe</th>
@@ -62,7 +63,7 @@
                 FROM
                 	members
                 	LEFT JOIN classes ON cla_id = mem_idclass
-                	LEFT JOIN sessions_topics_feedbacks ON fee_idmember = mem_id
+                	LEFT JOIN sessions_topics_feedbacks ON fee_idmembertarget = mem_id
                 WHERE
                 	cla_iduser = {$_SESSION['userlogin']['use_id']}
                 GROUP BY
@@ -79,6 +80,9 @@
               if ($Read->getResult()) {
                 foreach ($Read->getResult() as $key => $value) {
                   echo "<tr class='single_member' id='{$value['mem_id']}'>
+                    <td>
+                      <a href='".BASE."/panel.php?page=members/feedbacks&id={$value['mem_id']}' class='btn btn-info btn-sm'>VER FEEDBACKS</a>
+                    </td>
                     <td>{$value['mem_id']}</td>
                     <td>{$value['mem_name']}</td>
                     <td>{$value['cla_name']}</td>

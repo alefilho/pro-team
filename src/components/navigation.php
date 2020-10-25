@@ -4,7 +4,8 @@ $pages = [
     "dashboard/index"
   ],
   "members" => [
-    "members/index"
+    "members/index",
+    "members/feedbacks"
   ],
   "sessions" => [
     "sessions/index",
