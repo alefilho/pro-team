@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once '../../_app/Config.inc.php';
+require_once '../../_app/Library/PHPMailer/PHPmailer.php';
+require_once '../../_app/Library/PHPMailer/SMTP.php';
 
 //DEFINE O CALLBACK E RECUPERA O POST
 $jSON = null;
@@ -113,6 +115,48 @@ if ($PostData && $PostData['AjaxFile'] == $File):
       if ($Read->getResult()) {
         $jSON['form']['#TopicForm'] = $Read->getResult()[0];
         $jSON['form']['#TopicForm']['id'] = $jSON['form']['#TopicForm']['top_id'];
+      }
+      break;
+
+    case 'sendEmail':
+      $Read->FullRead("SELECT
+          mem_id,
+          mem_email,
+          mem_name
+        FROM
+          members
+          LEFT JOIN classes ON cla_id = mem_idclass
+        WHERE
+          cla_iduser = {$_SESSION['userlogin']['use_id']}"
+      );
+
+      if ($Read->getResult()) {
+        foreach ($Read->getResult() as $key => $value) {
+          $body = "Olá <b>{$value['mem_name']}</b>, </br></br> {$_SESSION['userlogin']['use_name']} criou uma nova sessão de feedback!";
+          $body .= "</br></br> Para acessar clique no link a baixo:";
+          $body .= "</br></br><a href='" . BASE_MEMBER . "/panel.php?page=sessions/teams&id={$PostData['id']}'> " . BASE_MEMBER . "/panel.php?page=sessions/teams&id={$PostData['id']}</a>";
+          $body .= "</br></br> Atenciosamente,</br>Equipe " . TITLE;
+
+          $Mailer = new PHPMailer();
+          $Mailer->IsSMTP();
+          $Mailer->CharSet = 'UTF-8';
+          $Mailer->SMTPDebug = 0;
+          $Mailer->Port = MAIL_PORT; //Indica a porta de conexão
+          $Mailer->Host = MAIL_HOST;//Endereço do Host do SMTP
+          $Mailer->SMTPAuth = true; //define se haverá ou não autenticação
+          $Mailer->Username = MAIL_USER; //Login de autenticação do SMTP
+          $Mailer->Password = MAIL_PASS; //Senha de autenticação do SMTP
+          $Mailer->FromName = TITLE; //Nome que será exibido
+          $Mailer->From = MAIL_FROM; //Obrigatório ser a mesma caixa
+          $Mailer->IsHTML(true);
+          $Mailer->AddAddress($value['mem_email'], $value['mem_name']);
+          $Mailer->Subject = TITLE . ' - Nova Sessão Feedback';
+          $Mailer->Body = $body;
+
+          if ($Mailer->Send()) {
+            $jSON['trigger'] = ToastError("E-mail(s) enviado(s) com sucesso!");
+          }
+        }
       }
       break;
   endswitch;

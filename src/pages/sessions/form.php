@@ -75,6 +75,7 @@ if (isset($GetId)) {
           <!-- Card footer -->
           <div class="card-footer py-4">
             <button class="btn btn-sm btn-default" type="submit" name="button">Salvar</button>
+            <button class="btn btn-sm btn-info j_ajax_generic" ajaxfile="Sessions" ajaxaction="sendEmail" ajaxdata="id=<?= $GetId; ?>" confirm="true" type="button" name="button">Enviar Email</button>
           </div>
         </form>
       </div>
