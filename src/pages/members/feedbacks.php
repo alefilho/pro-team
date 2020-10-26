@@ -136,6 +136,6 @@ if (isset($GetId)) {
 
 <script>
   $(function() {
-    $("#Media").html("<?= $total / $Read->getRowCount(); ?>")
+    $("#Media").html("<?= number_format($total / $Read->getRowCount(), 2); ?>")
   })
 </script>
